@@ -23,7 +23,11 @@ Vagrant.configure("2") do |config|
   # Every Vagrant development environment requires a box. You can search for
   # boxes at https://vagrantcloud.com/search.
   # config.vm.box = "base"
-  config.vm.box = "ubuntu/bionic64"
+  #config.vm.box = "ubuntu/bionic64"
+
+  #try hyperv instead!
+  config.vm.box = "hashicorp/bionic64"
+  config.vm.box_version = "1.0.282"
 
   # Disable automatic box update checking. If you disable this, then
   # boxes will only be checked for updates when the user runs
@@ -62,6 +66,11 @@ Vagrant.configure("2") do |config|
             vb.memory = 2048
             vb.cpus = 2
         end
+
+        node.vm.provider "hyperv" do |h|
+          h.vmname = "kubemaster"
+        end
+
         node.vm.hostname = "kubemaster"
         node.vm.network :private_network, ip: IP_NW + "#{MASTER_IP_START + i}"
         node.vm.network "forwarded_port", guest: 22, host: "#{2710 + i}"
@@ -84,6 +93,11 @@ Vagrant.configure("2") do |config|
             vb.memory = 2048
             vb.cpus = 2
         end
+
+        node.vm.provider "hyperv" do |h|
+          h.vmname = "kubenode0#{i}"
+        end
+
         node.vm.hostname = "kubenode0#{i}"
         node.vm.network :private_network, ip: IP_NW + "#{NODE_IP_START + i}"
                 node.vm.network "forwarded_port", guest: 22, host: "#{2720 + i}"
